@@ -1,13 +1,14 @@
-use super::*;
+use crate::{assets::Assets, model::*};
 
-use model::*;
+use geng::prelude::*;
 
-pub struct Render {
+#[allow(dead_code)]
+pub struct GameRender {
     geng: Geng,
     assets: Rc<Assets>,
 }
 
-impl Render {
+impl GameRender {
     pub fn new(geng: &Geng, assets: &Rc<Assets>) -> Self {
         Self {
             geng: geng.clone(),

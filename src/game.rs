@@ -1,11 +1,11 @@
-use super::*;
+use crate::{assets::Assets, model::*, render::GameRender};
 
-use model::*;
-use render::Render;
+use geng::prelude::*;
 
+#[allow(dead_code)]
 pub struct Game {
     geng: Geng,
-    render: Render,
+    render: GameRender,
     model: Model,
 }
 
@@ -13,7 +13,7 @@ impl Game {
     pub fn new(geng: &Geng, assets: &Rc<Assets>) -> Self {
         Self {
             geng: geng.clone(),
-            render: Render::new(geng, assets),
+            render: GameRender::new(geng, assets),
             model: Model::new(),
         }
     }
@@ -21,7 +21,7 @@ impl Game {
 
 impl geng::State for Game {
     fn draw(&mut self, framebuffer: &mut ugli::Framebuffer) {
-        ugli::clear(framebuffer, Some(Color::BLACK), None);
+        ugli::clear(framebuffer, Some(Rgba::BLACK), None, None);
         self.render.draw(&self.model, framebuffer);
     }
 

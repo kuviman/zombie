@@ -1,4 +1,6 @@
-use super::*;
+mod logic;
+
+use geng::prelude::*;
 
 pub type Time = R32;
 
