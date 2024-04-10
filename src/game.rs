@@ -1,20 +1,31 @@
-use crate::{assets::Assets, model::*, render::GameRender};
+use crate::{
+    assets::Assets,
+    controls::{self, GengEvent},
+    model::{self, *},
+    render, sound,
+};
 
+use evenio::prelude::*;
 use geng::prelude::*;
 
 #[allow(dead_code)]
 pub struct Game {
     geng: Geng,
-    render: GameRender,
-    model: Model,
+    world: World,
 }
 
 impl Game {
     pub fn new(geng: &Geng, assets: &Rc<Assets>) -> Self {
         Self {
             geng: geng.clone(),
-            render: GameRender::new(geng, assets),
-            model: Model::new(),
+            world: {
+                let mut world = World::new();
+                model::init(&mut world);
+                render::init(&mut world, geng, assets);
+                controls::init(&mut world, geng);
+                sound::init(&mut world, geng, assets);
+                world
+            },
         }
     }
 }
@@ -22,13 +33,20 @@ impl Game {
 impl geng::State for Game {
     fn draw(&mut self, framebuffer: &mut ugli::Framebuffer) {
         ugli::clear(framebuffer, Some(Rgba::BLACK), None, None);
-        self.render.draw(&self.model, framebuffer);
+        self.world.send(crate::render::Draw {
+            framebuffer: unsafe {
+                // SAFETY: this is safe
+                std::mem::transmute(framebuffer)
+            },
+        });
     }
 
-    fn handle_event(&mut self, _event: geng::Event) {}
+    fn handle_event(&mut self, event: geng::Event) {
+        self.world.send(GengEvent(event));
+    }
 
     fn update(&mut self, delta_time: f64) {
         let delta_time = Time::new(delta_time as _);
-        self.model.update(delta_time);
+        self.world.send(crate::model::Update { delta_time });
     }
 }

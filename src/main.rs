@@ -1,7 +1,9 @@
 mod assets;
+mod controls;
 mod game;
 mod model;
 mod render;
+mod sound;
 
 use geng::prelude::*;
 

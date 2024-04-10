@@ -1,7 +1,10 @@
 use geng::prelude::*;
 
 #[derive(geng::asset::Load)]
-pub struct Assets {}
+pub struct Assets {
+    pub zombie: Rc<ugli::Texture>,
+    pub aaah: Rc<geng::Sound>,
+}
 
 impl Assets {
     pub async fn load(manager: &geng::asset::Manager) -> anyhow::Result<Self> {
